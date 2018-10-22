@@ -4,12 +4,12 @@ def input_students
   puts "Please enter the names of the students followed by their cohort, hobby and country"
   puts "To finish just hit return 4 times"
 
-  name = gets.chomp
-  cohort = gets.chomp.to_s
+  name = STDIN.gets.chomp
+  cohort = STDIN.gets.chomp.to_s
   cohort = "January" if cohort.empty?
-  hobby = gets.chomp.to_s
+  hobby = STDIN.gets.chomp.to_s
   hobby = "Basketball" if hobby.empty?
-  country = gets.chomp.to_s
+  country = STDIN.gets.chomp.to_s
   country = "UK" if country.empty?
 
   while !name.empty? do
@@ -28,12 +28,12 @@ def input_students
       puts "There are no students!"
     end
 
-    name = gets.chomp
-    cohort = gets.chomp.to_s
+    name = STDIN.gets.chomp
+    cohort = STDIN.gets.chomp.to_s
     cohort = "January" if cohort.empty?
-    hobby = gets.chomp.to_s
+    hobby = STDIN.gets.chomp.to_s
     hobby = "Basketball" if hobby.empty?
-    country = gets.chomp.to_s
+    country = STDIN.gets.chomp.to_s
     country = "UK" if country.empty?
 
   end
@@ -53,7 +53,7 @@ end
 
 def get_first_letter
   puts "Please enter the letter of the student you wish to view"
-  letter = gets.chomp.downcase
+  letter = STDIN.gets.chomp.downcase
 end
 
 def print_students_whose_name_starts_with_letter_x(get_first_letter)
@@ -101,13 +101,25 @@ def save_students
   file.close
 end
 
-def load_students
-  file = File.open("students.csv", "r")
+def load_students(filename = "students.csv")
+  file = File.open(filename, "r")
   file.readlines.each do |line|
   name, cohort, hobby, country = line.chomp.split(',')
     @students << {name: name, cohort: cohort.to_sym, hobby: hobby.to_sym, country: country.to_sym}
   end
   file.close
+end
+
+def try_load_students
+  filename = ARGV.first # First argument from the command line
+  return if filename.nil? # Get out of the method if it isn't given
+  if File.exists?(filename) # If it exists
+    load_students(filename)
+    puts "Loaded #{@students.count} from #{filename}"
+  else # If it doesn't exist
+    puts "Sorry, #{filename} doesn't exist."
+    exit # Quits the programme
+  end
 end
 
 def process(selection)
@@ -130,8 +142,9 @@ end
 def interactive_menu
   loop do
     print_menu
-    process(gets.chomp)
+    process(STDIN.gets.chomp)
   end
 end
 
+try_load_students
 interactive_menu
