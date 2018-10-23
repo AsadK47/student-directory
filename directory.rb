@@ -1,24 +1,24 @@
 @students = []
 
+def shovel(name, cohort, hobby, country)
+  @students << {name: name, cohort: cohort.to_sym, hobby: hobby.to_sym, country: country.to_sym}
+end
+
 def input_students
   puts "Please enter the names of the students followed by their cohort, hobby and country"
   puts "To finish just hit return 4 times"
 
   name = STDIN.gets.chomp
-  cohort = STDIN.gets.chomp.to_s
+  cohort = STDIN.gets.chomp.to_sym
   cohort = "January" if cohort.empty?
-  hobby = STDIN.gets.chomp.to_s
+  hobby = STDIN.gets.chomp.to_sym
   hobby = "Basketball" if hobby.empty?
-  country = STDIN.gets.chomp.to_s
+  country = STDIN.gets.chomp.to_sym
   country = "UK" if country.empty?
 
   while !name.empty? do
-    @students << {
-      name: name,
-      cohort: cohort,
-      hobby: hobby,
-      country: country
-    }
+
+    shovel(name, cohort, hobby, country)
 
     if @students.count == 1
       puts "Now we have #{@students.count} student"
@@ -75,10 +75,12 @@ def print_footer
 end
 
 def print_menu
+  puts "Please enter a number for one of the following options"
   puts "1. Input the students"
   puts "2. Show the students"
-  puts "3. Save the list to students.csv"
-  puts "4. Load the list from students.csv"
+  puts "3. Save the list to (filename)"
+  puts "4. Load the list from (filename)"
+  puts "5. Print students that start with ..."
   puts "9. Exit"
 end
 
@@ -86,13 +88,12 @@ def show_students
   print_header
   print_students_list
   print_footer
-  print_students_whose_name_starts_with_letter_x(get_first_letter)
 end
 
 def save_students
-  # open the file for writing
-  file = File.open("students.csv", "w")
-  # iterate over the array of students
+  puts "Please give the name of the file to be saved (Note, all files are saved as CSV's) - Press enter to return to menu"
+  save_students_input = gets.chomp
+  file = File.open(save_students_input + ".csv", "w")
   @students.each do |student|
     student_data = [student[:name], student[:cohort], student[:hobby], student[:country]]
     csv_line = student_data.join(",")
@@ -102,10 +103,12 @@ def save_students
 end
 
 def load_students(filename = "students.csv")
-  file = File.open(filename, "r")
+  puts "Please give the name of the file to be loaded (Note, all files are loaded as CSV's) - Press enter to return to menu"
+  load_students_input = gets.chomp
+  file = File.open(load_students_input + ".csv", "r")
   file.readlines.each do |line|
   name, cohort, hobby, country = line.chomp.split(',')
-    @students << {name: name, cohort: cohort.to_sym, hobby: hobby.to_sym, country: country.to_sym}
+    shovel(name, cohort, hobby, country)
   end
   file.close
 end
@@ -125,14 +128,22 @@ end
 def process(selection)
   case selection
   when "1"
+    puts "You chose 1. Please follow the instructions below"
     students = input_students
   when "2"
+    puts "You chose 2"
     show_students
   when "3"
+    puts "You chose 3"
     save_students
   when "4"
+    puts "You chose 4"
     load_students
+  when "5"
+    puts "You chose 5"
+    print_students_whose_name_starts_with_letter_x(get_first_letter)
   when "9"
+    puts "Bye!"
     exit # This will cause the programme to terminate
   else
     puts "I don't know what you mean, please try again!"
