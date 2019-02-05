@@ -1,24 +1,28 @@
 @students = []
 
 def shovel(name, cohort, hobby, country)
-  @students << {name: name, cohort: cohort.to_sym, hobby: hobby.to_sym, country: country.to_sym}
+  @students << {name: @name, cohort: @cohort.to_sym, hobby: @hobby.to_sym, country: @country.to_sym}
+end
+
+def answers
+  @name = STDIN.gets.chomp
+  @cohort = STDIN.gets.chomp
+  @cohort = "January" if @cohort.empty?
+  @hobby = STDIN.gets.chomp
+  @hobby = "Basketball" if @hobby.empty?
+  @country = STDIN.gets.chomp
+  @country = "UK" if @country.empty?
 end
 
 def input_students
-  puts "Please enter the names of the students followed by their cohort, hobby and country"
+  puts "Please enter the names of the students followed by their name, cohort, hobby and country"
   puts "To finish just hit return 4 times"
 
-  name = STDIN.gets.chomp
-  cohort = STDIN.gets.chomp.to_sym
-  cohort = "January" if cohort.empty?
-  hobby = STDIN.gets.chomp.to_sym
-  hobby = "Basketball" if hobby.empty?
-  country = STDIN.gets.chomp.to_sym
-  country = "UK" if country.empty?
+  answers
 
-  while !name.empty? do
+  while !@name.empty? do
 
-    shovel(name, cohort, hobby, country)
+    shovel(@name, @cohort, @hobby, @country)
 
     if @students.count == 1
       puts "Now we have #{@students.count} student"
@@ -28,13 +32,7 @@ def input_students
       puts "There are no students!"
     end
 
-    name = STDIN.gets.chomp
-    cohort = STDIN.gets.chomp.to_s
-    cohort = "January" if cohort.empty?
-    hobby = STDIN.gets.chomp.to_s
-    hobby = "Basketball" if hobby.empty?
-    country = STDIN.gets.chomp.to_s
-    country = "UK" if country.empty?
+    answers
 
   end
   @students
